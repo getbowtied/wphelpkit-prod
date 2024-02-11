@@ -1,0 +1,23 @@
+.tax-helpkit-category .taxonomy-description,
+.tax-helpkit-tag .taxonomy-description,
+.wphelpkit-template.search-results .entry-header {
+    margin-bottom: 2em;
+}
+
+.wphelpkit-template .entry-title {
+    margin-bottom: 0.2em;
+}
+
+.wphelpkit-article .entry-footer {
+    width: inherit !important;
+}
+
+.wphelpkit-subcategories li .wphelpkiticons {
+    position: relative;
+    top: 2px;
+}
+
+.wphelpkit-articles li .wphelpkiticons {
+    position: relative;
+    top: 1px;
+}

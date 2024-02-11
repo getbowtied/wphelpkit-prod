@@ -1,0 +1,27 @@
+.site-header {
+    background-color: #fff;
+}
+
+/* help the article content flow around the table-of-contents */
+.wphelpkit-article .entry-content h1,
+.wphelpkit-article .entry-content h2,
+.wphelpkit-article .entry-content h3,
+.wphelpkit-article .entry-content h4,
+.wphelpkit-article .entry-content h5,
+.wphelpkit-article .entry-content h6 {
+    clear: none;
+}
+
+article.helpkit {
+    margin-bottom: 0;
+}
+
+.wphelpkit-subcategories li .wphelpkiticons {
+    position: relative;
+    top: 2px;
+}
+
+.wphelpkit-articles li .wphelpkiticons {
+    position: relative;
+    top: 2px;
+}

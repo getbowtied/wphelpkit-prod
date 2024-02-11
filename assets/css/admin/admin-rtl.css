@@ -1,0 +1,49 @@
+#dashboard_right_now li a[href*="helpkit"]::before,
+#dashboard_right_now li span.helpkit::before,
+#menu-posts-helpkit .wp-menu-image::before {
+    content: '\e904';
+    font-family: 'wphelpkiticons';
+}
+/*
+.postbox#wphelpkit-toc_metabox_id h2.hndle span {
+    color: #191e23;
+    font-size: 13px;
+}
+
+.postbox#wphelpkit-toc_metabox_id .handlediv .toggle-indicator {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewbox='0 0 24 24'><path d='M12,8l-6,6l1.41,1.41L12,10.83l4.59,4.58L18,14L12,8z'/></svg>");
+    display: block;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.postbox#wphelpkit-toc_metabox_id.closed .handlediv .toggle-indicator {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewbox='0 0 24 24'><path d='M7.41,8.59L12,13.17l4.59-4.58L18,10l-6,6l-6-6L7.41,8.59z'/></svg>");
+}
+
+.postbox#wphelpkit-toc_metabox_id .handlediv .toggle-indicator:before {
+    content: none;
+}
+
+.postbox#wphelpkit-toc_metabox_id:not(.closed) .ui-sortable-handle {
+    border-bottom: 0;
+}
+
+.edit-post-meta-boxes-area .metabox-location-side .postbox input[type="checkbox"]:checked {
+    background: #11a0d2;
+    border-color: #11a0d2;
+}
+
+.edit-post-meta-boxes-area .metabox-location-side .postbox input[type="checkbox"] {
+    border: 2px solid #6c7781;
+}
+
+.edit-post-meta-boxes-area .metabox-location-side .postbox input[type="checkbox"]:checked:focus {
+    box-shadow: 0 0 0 2px #555d66;
+}
+*/
+
+.fs-tab-options-wrapper {
+    padding: 18px;
+}
