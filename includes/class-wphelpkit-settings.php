@@ -539,12 +539,11 @@ class WPHelpKit_Settings
         }
 
         add_settings_field(
-            'wphelpkit-hidden-permalink-field',
+            'wphelpkit_permalink_custom_settings',
             '',
-            array( $this, 'output_hidden_text_settings_permalink_field' ),
+            array( $this, 'output_wphelpkit_permalink_custom_settings' ),
             'permalink',
-            'wphelpkit-slugs',
-            array( 'option' => 'wphelpkit_hidden_permalink_field' )
+            'wphelpkit-slugs'
         );
 
         return;
@@ -594,14 +593,9 @@ class WPHelpKit_Settings
         return;
     }
 
-    public function output_hidden_text_settings_permalink_field($args)
+    public function output_wphelpkit_permalink_custom_settings()
     {
-        echo sprintf(
-            "<input type='hidden' name='%s' id='%s' value='' />",
-            esc_attr($args['option']),
-            esc_attr($args['option'])
-        );
-
+        wp_nonce_field('wphelpkit_permalink_custom_settings_action', 'wphelpkit_permalink_custom_settings_nonce');
         return;
     }
 
@@ -730,8 +724,16 @@ class WPHelpKit_Settings
      */
     public function save_settings()
     {
+        if ( ! current_user_can('manage_options') ) {
+            return;
+        }
 
-        if ( !isset($_POST['wphelpkit_settings_nonce']) && !isset($_POST['wphelpkit_hidden_permalink_field']) ) {
+        if
+        ( 
+            ! ( isset($_POST['wphelpkit_settings_nonce']) && wp_verify_nonce($_POST['wphelpkit_settings_nonce'], 'wphelpkit_settings_action') ) &&
+            ! ( isset($_POST['wphelpkit_permalink_custom_settings_nonce']) && wp_verify_nonce($_POST['wphelpkit_permalink_custom_settings_nonce'], 'wphelpkit_permalink_custom_settings_action') )
+        )
+        {
             return;
         }
             
@@ -739,13 +741,13 @@ class WPHelpKit_Settings
 
             $data = array_map( 'sanitize_text_field', $_POST[ self::$option_name ] );
 
-            if (isset($_POST['wphelpkit_settings_nonce'])) {
+            if ( isset($_POST['wphelpkit_settings_nonce']) && wp_verify_nonce($_POST['wphelpkit_settings_nonce'], 'wphelpkit_settings_action') ) {
                 $data['search_in_category'] = $this->sanitize_checkbox_option($_POST[ self::$option_name ]['search_in_category'] || false);
                 $data['category_index_tree'] = $this->sanitize_checkbox_option($_POST[ self::$option_name ]['category_index_tree'] || false);
                 $data['category_redirect_to_article'] = $this->sanitize_checkbox_option($_POST[ self::$option_name ]['category_redirect_to_article'] || false);
             }
 
-            if (isset($_POST['wphelpkit_hidden_permalink_field'])) {
+            if ( isset($_POST['wphelpkit_permalink_custom_settings_nonce']) && wp_verify_nonce($_POST['wphelpkit_permalink_custom_settings_nonce'], 'wphelpkit_permalink_custom_settings_action') ) {
                 $product_base = isset( $data['article_permalink_structure'] ) ? $this->clean_permalink( wp_unslash( $data['article_permalink_structure'] ) ) : '';
                 $data['article_permalink_structure'] = $this->sanitize_permalink_option( $product_base );
 

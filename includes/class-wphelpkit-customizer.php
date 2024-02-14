@@ -92,7 +92,7 @@ class WPHelpKit_Customizer
     {
         check_ajax_referer(self::$get_archive_page_permalink_action . '-nonce', 'nonce');
 
-        echo get_post_type_archive_link(WPHelpKit_Article::$post_type);
+        echo wp_kses_post(get_post_type_archive_link(WPHelpKit_Article::$post_type));
 
         exit;
     }

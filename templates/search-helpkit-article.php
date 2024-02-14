@@ -24,7 +24,7 @@ get_header(); ?>
 ?>
         </div>
         <?php if (have_posts()) : ?>
-            <h1 class='page-title'><?php printf(esc_html__('Search Results for &ldquo;%s&rdquo;', 'wphelpkit'), '<span>' . get_search_query() . '</span>'); ?></h1>
+            <h1 class='page-title'><?php printf(esc_html__('Search Results for &ldquo;%s&rdquo;', 'wphelpkit'), '<span>' . esc_attr( get_search_query() ) . '</span>'); ?></h1>
         <?php else : ?>
             <h1 class='page-title'><?php esc_html_e('Nothing Found', 'wphelpkit') ?></h1>
         <?php endif; ?>
@@ -62,7 +62,7 @@ if (have_posts()) :
                         echo sprintf('<span class="wphelpkit-categories">%s %s</span>', esc_html__('in', 'wphelpkit'), wp_kses_post($categories_list));
                     }
                     if( !empty($article_excerpt=get_the_excerpt(get_the_ID())) ) {
-                        echo sprintf('<p class="wphelpkit-article-excerpt">%s</p>', wp_trim_words($article_excerpt, 20));
+                        echo sprintf('<p class="wphelpkit-article-excerpt">%s</p>', wp_trim_words(wp_kses_post($article_excerpt), 20));
                     }
                     ?>
                 </li>
@@ -71,7 +71,7 @@ if (have_posts()) :
     ?>
             </ul>
     <?php
-    echo apply_filters('wphelpkit-search-pagination', get_the_posts_pagination());
+    echo apply_filters( 'wphelpkit-search-pagination', wp_kses_post( get_the_posts_pagination() ) );
 else : ?>
             <p><?php esc_html_e('Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'wphelpkit'); ?></p>
             <?php

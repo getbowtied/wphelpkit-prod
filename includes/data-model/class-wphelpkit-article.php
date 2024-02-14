@@ -287,7 +287,7 @@ class WPHelpKit_Article
         }
         
         if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ) ) && isset( $_GET['post'] ) ) {
-            $current_post = get_post( esc_attr( $_GET['post'] ) );
+            $current_post = get_post( esc_attr( sanitize_text_field( $_GET['post'] ) ) );
         } elseif ( $post ) {
             $current_post = $post;
         } else {

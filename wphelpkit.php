@@ -2,8 +2,8 @@
 
 /*
  * Plugin Name: WPHelpKit
- * Description: Documentation and Knowledge Base — Publish, organize and manage Help Articles for your software product.
- * Version: 1.2
+ * Description: Documentation and Knowledge Base — Organize, publish, and manage help articles for your SaaS or software product.
+ * Version: 1.3
  * Author: WPHelpKit
  * Plugin URI: https://wphelpkit.com
  * Release Asset: true
@@ -102,7 +102,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @var string
              */
-            const  VERSION = '1.2' ;
+            const  VERSION = '1.3' ;
             /**
              * Transient name to set when we are activated.
              *
@@ -163,7 +163,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                 add_action( 'init', array( $this, 'register_scripts_styles' ) );
                 add_action( 'init', array( $this, 'maybe_create_helpkit_page' ), PHP_INT_MAX );
                 add_filter(
-                    'block_categories',
+                    'block_categories_all',
                     array( $this, 'block_categories' ),
                     10,
                     2

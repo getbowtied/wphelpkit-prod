@@ -115,7 +115,7 @@ $tags_list = get_the_term_list(
     ''
 );
 if ( $tags_list && !is_wp_error( $tags_list ) ) {
-    echo  '<span class="wphelpkit-tags-links"><span class="wphelpkiticons wphelpkiticons-tag"></span><span class="screen-reader-text">' . esc_html__( 'Tags', 'wphelpkit' ) . '</span>' . $tags_list . '</span>' ;
+    echo  '<span class="wphelpkit-tags-links"><span class="wphelpkiticons wphelpkiticons-tag"></span><span class="screen-reader-text">' . esc_html__( 'Tags', 'wphelpkit' ) . '</span>' . wp_kses_post( $tags_list ) . '</span>' ;
 }
 edit_post_link( esc_html__( 'Edit', 'wphelpkit' ) . '<span class="screen-reader-text"> ' . get_the_title() . '</span>', '<span class="edit-link">', '</span>' );
 $related_articles = WPHelpKit_Article::get_instance()->get_related_articles( $post );

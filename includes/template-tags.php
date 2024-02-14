@@ -326,7 +326,7 @@ function wphelpkit_get_related_articles( $post = null )
  */
 function wphelpkit_related_articles( $post = null )
 {
-    echo  wphelpkit_get_related_articles( $post ) ;
+    echo  wp_kses_post( wphelpkit_get_related_articles( $post ) ) ;
     return;
 }
 
@@ -369,7 +369,7 @@ function wphelpkit_get_archive( $attrs = array() )
     }
     $_attrs = trim( $_attrs );
     $shortcode = sprintf( '[%s %s]', WPHelpKit_Article::$article_archive_shortcode, $_attrs );
-    return do_shortcode( $shortcode );
+    return do_shortcode( wp_kses_post( $shortcode ) );
 }
 
 /**
@@ -393,6 +393,7 @@ function wphelpkit_get_archive( $attrs = array() )
 function wphelpkit_archive( $attrs = array() )
 {
     echo  wphelpkit_get_archive( $attrs ) ;
+    //escaped in the function: return do_shortcode(wp_kses_post($shortcode));
     return;
 }
 
@@ -473,7 +474,7 @@ function wphelpkit_get_tag_archive( $attrs = array() )
     }
     $_attrs = trim( $_attrs );
     $shortcode = sprintf( '[%s %s]', WPHelpKit_Article_Tag::$tag_archive_shortcode, $_attrs );
-    return do_shortcode( $shortcode );
+    return do_shortcode( wp_kses_post( $shortcode ) );
 }
 
 /**
@@ -511,4 +512,5 @@ function wphelpkit_category_archive( $attrs )
 function wphelpkit_tag_archive( $attrs )
 {
     echo  wphelpkit_get_tag_archive( $attrs ) ;
+    //escaped in the function: return do_shortcode(wp_kses_post($shortcode));
 }
