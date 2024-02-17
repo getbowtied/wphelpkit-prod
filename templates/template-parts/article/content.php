@@ -32,7 +32,7 @@ the_title( '<h1 class="entry-title">', '</h1>' );
             <span class='wphelpkit-article-author'>
 <?php 
 echo  wp_kses_post( get_avatar( $post->post_author, 40 ) ) ;
-echo  sprintf( '<span class="name">%s</span>', get_the_author() ) ;
+echo  wp_kses_post( sprintf( '<span class="name">%s</span>', get_the_author() ) ) ;
 ?>
             </span>
             <span class='wphelpkit-article-datetime'>

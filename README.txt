@@ -2,7 +2,7 @@
 
 Contributors: wphelpkit
 Tags: WPHelpKit, knowledge base, documentation, faqs, support, docs, help center, wiki
-Stable tag: 1.3
+Stable tag: 1.4
 Requires at least: 6.0
 Tested up to: 6.4
 License: GPL-2.0-or-later
@@ -51,6 +51,9 @@ In your WordPress administration dashboard, go to HelpKit > Add New
 Open up the HelpKit page via Appearance > Customize and start draging and dropping help article or categories direcly in the livew preview of the Customizer.
 
 == Changelog ==
+
+= 1.4 =
+* Fix: Address some issues requested by the WordPress team
 
 = 1.3 =
 * Fix: Address some issues requested by the WordPress team

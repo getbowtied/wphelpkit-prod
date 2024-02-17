@@ -48,7 +48,7 @@ if (have_posts()) :
         ?>
                 <li class='wphelpkit-article'>
                     <span class='wphelpkiticons wphelpkiticons-article'></span>
-                    <a href='<?php echo get_the_permalink(); ?>' class="wphelpkit-article-title"><?php echo get_the_title(); ?></a>
+                    <a href='<?php echo esc_url(get_the_permalink()); ?>' class="wphelpkit-article-title"><?php echo wp_kses_post(get_the_title()); ?></a>
                     <?php
                     $categories = get_the_terms($post, WPHelpKit_Article_Category::$category);
                     if (is_array($categories)) {

@@ -3,7 +3,7 @@
 /*
  * Plugin Name: WPHelpKit
  * Description: Documentation and Knowledge Base — Organize, publish, and manage help articles for your SaaS or software product.
- * Version: 1.3
+ * Version: 1.4
  * Author: WPHelpKit
  * Plugin URI: https://wphelpkit.com
  * Release Asset: true
@@ -102,7 +102,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @var string
              */
-            const  VERSION = '1.3' ;
+            const  VERSION = '1.4' ;
             /**
              * Transient name to set when we are activated.
              *

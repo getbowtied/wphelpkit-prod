@@ -372,7 +372,7 @@ class WPHelpKit_Settings
     ?>
         <div class="wrap fs-section fs-full-size-wrapper">
             <h2 class="nav-tab-wrapper">
-                <a href="<?php echo get_admin_url() . '/edit.php?post_type=helpkit&page=wphelpkit-settings' ?>" class="nav-tab fs-tab nav-tab-active home">
+                <a href="<?php echo esc_url(get_admin_url()) . 'edit.php?post_type=helpkit&page=wphelpkit-settings' ?>" class="nav-tab fs-tab nav-tab-active home">
                     <?php esc_html_e( 'Settings', 'wphelpkit' ); ?>
                 </a>
             </h2>
@@ -562,7 +562,7 @@ class WPHelpKit_Settings
     {
         // the a tag is so that we can link to this section from the Settings
         // action link in the plugins list table.
-        echo sprintf("<a name='%s'></a>", self::$section_id);
+        echo sprintf("<a name='%s'></a>", esc_attr(self::$section_id));
 
         return;
     }
@@ -587,7 +587,7 @@ class WPHelpKit_Settings
             esc_attr($args['option']),
             esc_attr(self::$option_name),
             esc_attr($args['option']),
-            $this->get_option($args['option'])
+            esc_attr($this->get_option($args['option']))
         );
 
         return;
@@ -623,7 +623,7 @@ class WPHelpKit_Settings
 			<tbody>
 				<tr>
 					<th><label><input name="<?php echo esc_attr(self::$option_name).'[article_permalink_structure]'; ?>" type="radio" value="<?php echo esc_attr( $structures[0] ); ?>" <?php checked( $structures[0], self::get_option('article_permalink_structure') ); ?> /> <?php esc_html_e( 'Default', 'wphelpkit' ); ?></label></th>
-					<td><code><?php echo esc_html( home_url() ) . '/?' . WPHelpKit_Article::$post_type . '=sample-article'; ?></code> / <code><?php echo esc_html( home_url() ); ?>/<?php echo WPHelpKit_Article::$post_type . '/sample-article/' ?></code></td>
+					<td><code><?php echo esc_html( home_url() ) . '/?' . esc_html(WPHelpKit_Article::$post_type) . '=sample-article'; ?></code> / <code><?php echo esc_html( home_url() ); ?>/<?php echo esc_html(WPHelpKit_Article::$post_type) . '/sample-article/' ?></code></td>
 				</tr>
 				<?php if ( self::get_option('index_page') ) : ?>
 					<tr>
@@ -699,7 +699,7 @@ class WPHelpKit_Settings
 
         $select_options = '';
         foreach ($choices as $value => $label) {
-            $select_options .= '<option value="' . esc_attr($value) . '"' . selected($this->get_option($args['option']), $value, false) . '>' . $label . '</option>';
+            $select_options .= '<option value="' . esc_attr($value) . '"' . selected($this->get_option($args['option']), $value, false) . '>' . esc_html($label) . '</option>';
         }
 
         echo sprintf(
@@ -708,7 +708,7 @@ class WPHelpKit_Settings
             esc_attr($args['option']),
             esc_attr(self::$option_name),
             esc_attr($args['option']),
-            $select_options
+            $select_options // Already safely escaped component-wise
         );
 
         return;
