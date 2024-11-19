@@ -6,8 +6,7 @@ defined( 'ABSPATH' ) || die;
  *
  * @since 0.9.1
  */
-class WPHelpKit_Article_Category
-{
+class WPHelpKit_Article_Category {
     /**
      * Our static instance.
      *
@@ -15,7 +14,8 @@ class WPHelpKit_Article_Category
      *
      * @var WPHelpKit_Article_Category
      */
-    private static  $instance ;
+    private static $instance;
+
     /**
      * Our "Categories" taxonomy.
      *
@@ -24,7 +24,8 @@ class WPHelpKit_Article_Category
      *
      * @var string
      */
-    public static  $category = 'helpkit-category' ;
+    public static $category = 'helpkit-category';
+
     /**
      * Our category archive shortcode.
      *
@@ -32,7 +33,8 @@ class WPHelpKit_Article_Category
      *
      * @var string
      */
-    public static  $category_archive_shortcode = 'wphelpkit_category' ;
+    public static $category_archive_shortcode = 'wphelpkit_category';
+
     /**
      * Our drag-and-drop category order AJAX action.
      *
@@ -40,7 +42,8 @@ class WPHelpKit_Article_Category
      *
      * @var string
      */
-    public static  $category_order_action = 'wphelpkit-category-order' ;
+    public static $category_order_action = 'wphelpkit-category-order';
+
     /**
      * Get our instance.
      *
@@ -51,14 +54,13 @@ class WPHelpKit_Article_Category
      *
      * @return WPHelpKit_Article_Category
      */
-    public static function get_instance()
-    {
+    public static function get_instance() {
         if ( !self::$instance ) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-    
+
     /**
      * Constructor.
      *
@@ -68,8 +70,7 @@ class WPHelpKit_Article_Category
      *
      * @return WPHelpKit_Article_Category
      */
-    public function __construct()
-    {
+    public function __construct() {
         if ( self::$instance ) {
             return self::$instance;
         }
@@ -79,7 +80,7 @@ class WPHelpKit_Article_Category
             $this->add_admin_hooks();
         }
     }
-    
+
     /**
      * Add hooks.
      *
@@ -87,34 +88,33 @@ class WPHelpKit_Article_Category
      *
      * @return void
      */
-    protected function add_hooks()
-    {
-        add_action( 'init', array( $this, 'setup' ) );
-        add_action( 'init', array( $this, 'add_shortcode' ) );
-        add_action( 'template_redirect', array( $this, 'maybe_redirect_to_article' ) );
-        add_action( 'pre_get_terms', array( $this, 'category_orderby' ) );
+    protected function add_hooks() {
+        add_action( 'init', array($this, 'setup') );
+        add_action( 'init', array($this, 'add_shortcode') );
+        add_action( 'template_redirect', array($this, 'maybe_redirect_to_article') );
+        add_action( 'pre_get_terms', array($this, 'category_orderby') );
         add_action(
             'created_' . self::$category,
-            array( $this, 'category_created' ),
+            array($this, 'category_created'),
             10,
             2
         );
         add_action(
             'delete_' . self::$category,
-            array( $this, 'category_deleted' ),
+            array($this, 'category_deleted'),
             10,
             4
         );
-        add_filter( 'pre_option_default_' . self::$category, array( $this, 'pre_default_category' ) );
+        add_filter( 'pre_option_default_' . self::$category, array($this, 'pre_default_category') );
         add_action(
             'save_post_' . WPHelpKit_Article::$post_type,
-            array( $this, 'maybe_assign_default_category' ),
+            array($this, 'maybe_assign_default_category'),
             10,
             3
         );
         return;
     }
-    
+
     /**
      * Add admin hooks.
      *
@@ -122,20 +122,19 @@ class WPHelpKit_Article_Category
      *
      * @return void
      */
-    protected function add_admin_hooks()
-    {
-        add_action( 'wp_ajax_' . self::$category_order_action, array( $this, 'ajax_category_order' ) );
+    protected function add_admin_hooks() {
+        add_action( 'wp_ajax_' . self::$category_order_action, array($this, 'ajax_category_order') );
         add_action(
             self::$category . '_row_actions',
-            array( $this, 'category_row_actions' ),
+            array($this, 'category_row_actions'),
             10,
             2
         );
-        add_action( 'restrict_manage_posts', array( $this, 'add_category_dropdown' ) );
-        add_action( 'admin_action_wphelpkit-make-default-category', array( $this, 'make_default_category' ) );
+        add_action( 'restrict_manage_posts', array($this, 'add_category_dropdown') );
+        add_action( 'admin_action_wphelpkit-make-default-category', array($this, 'make_default_category') );
         return;
     }
-    
+
     /**
      * Perform basic setup operations.
      *
@@ -145,30 +144,23 @@ class WPHelpKit_Article_Category
      *
      * @action init
      */
-    public function setup()
-    {
+    public function setup() {
         $default_category = WPHelpKit_Settings::get_instance()->get_option( 'default_category' );
-        
-        if ( empty($default_category) || !get_term_by( 'id', $default_category, self::$category ) ) {
+        if ( empty( $default_category ) || !get_term_by( 'id', $default_category, self::$category ) ) {
             $uncategorized_name = esc_html__( 'Uncategorized', 'wphelpkit' );
             $uncategorized = get_term_by( 'name', $uncategorized_name, self::$category );
-            
             if ( !$uncategorized ) {
                 $uncategorized = wp_insert_term( $uncategorized_name, self::$category );
-                
                 if ( is_wp_error( $uncategorized ) ) {
                     return $uncategorized;
                 } else {
                     $uncategorized = get_term_by( 'id', $uncategorized['term_id'], self::$category );
                 }
-            
             }
-            
             WPHelpKit_Settings::get_instance()->set_option( 'default_category', $uncategorized->term_id );
         }
-    
     }
-    
+
     /**
      * Add our article category archive shortcode.
      *
@@ -178,12 +170,11 @@ class WPHelpKit_Article_Category
      *
      * @action init
      */
-    public function add_shortcode()
-    {
-        add_shortcode( self::$category_archive_shortcode, array( $this, 'category_archive_shortcode' ) );
+    public function add_shortcode() {
+        add_shortcode( self::$category_archive_shortcode, array($this, 'category_archive_shortcode') );
         return;
     }
-    
+
     /**
      * Redirect category to first article when Settings option is set to true.
      *
@@ -193,8 +184,7 @@ class WPHelpKit_Article_Category
      *
      * @action init
      */
-    public function maybe_redirect_to_article()
-    {
+    public function maybe_redirect_to_article() {
         if ( !(!is_search() && !WPHelpKit::is_previewing() && is_tax( self::$category ) && 'yes' === WPHelpKit_Settings::get_instance()->get_option( 'category_redirect_to_article' )) ) {
             return;
         }
@@ -207,15 +197,14 @@ class WPHelpKit_Article_Category
             'orderby'        => 'meta_value_num title',
             'order'          => 'ASC',
             'meta_key'       => WPHelpKit_Article::get_instance()->display_order_meta_key( $current_category->term_id ),
-            'tax_query'      => array( array(
-            'taxonomy'         => $taxonomy,
-            'field'            => 'term_id',
-            'terms'            => $current_category->term_id,
-            'include_children' => false,
-        ) ),
+            'tax_query'      => array(array(
+                'taxonomy'         => $taxonomy,
+                'field'            => 'term_id',
+                'terms'            => $current_category->term_id,
+                'include_children' => false,
+            )),
         ) );
         // category doesn't have a direct child
-        
         if ( !isset( $article[0] ) ) {
             $child_categories = get_terms( array(
                 'taxonomy'       => WPHelpKit_Article_Category::$category,
@@ -227,7 +216,7 @@ class WPHelpKit_Article_Category
                 'pagination'     => true,
             ) );
             // category doesn't have a child category
-            if ( empty($child_categories) ) {
+            if ( empty( $child_categories ) ) {
                 return;
             }
             foreach ( $child_categories as $child_category ) {
@@ -238,23 +227,22 @@ class WPHelpKit_Article_Category
                     'orderby'        => 'meta_value_num title',
                     'order'          => 'ASC',
                     'meta_key'       => WPHelpKit_Article::get_instance()->display_order_meta_key( $child_category->term_id ),
-                    'tax_query'      => array( array(
-                    'taxonomy'         => $taxonomy,
-                    'field'            => 'term_id',
-                    'terms'            => $child_category->term_id,
-                    'include_children' => false,
-                ) ),
+                    'tax_query'      => array(array(
+                        'taxonomy'         => $taxonomy,
+                        'field'            => 'term_id',
+                        'terms'            => $child_category->term_id,
+                        'include_children' => false,
+                    )),
                 ) );
                 if ( isset( $article[0] ) ) {
                     break;
                 }
             }
         }
-        
         wp_safe_redirect( get_permalink( $article[0]->ID ), 301 );
         exit;
     }
-    
+
     /**
      * Generate the output for our article archive shortcode.
      *
@@ -271,9 +259,8 @@ class WPHelpKit_Article_Category
      *                     shortcode attribute values.
      * @return string
      */
-    public function category_archive_shortcode( $attrs )
-    {
-        global  $post ;
+    public function category_archive_shortcode( $attrs ) {
+        global $post;
         WPHelpKit_Templates::load_template_tags();
         $settings = WPHelpKit_Settings::get_instance();
         $is_previewing = WPHelpKit::is_previewing();
@@ -293,45 +280,42 @@ class WPHelpKit_Article_Category
         if ( is_numeric( $attrs['category'] ) ) {
             $attrs['category'] = intval( $attrs['category'] );
         }
-        
         if ( is_int( $attrs['category'] ) ) {
             $attrs['category'] = get_term_by( 'id', $attrs['category'], self::$category );
         } else {
             $attrs['category'] = get_term_by( 'name', $attrs['category'], self::$category );
         }
-        
         if ( !$attrs['category'] instanceof WP_Term ) {
             return '';
         }
         // sanitize int vals
-        foreach ( array( 'number_of_posts' ) as $key ) {
+        foreach ( array('number_of_posts') as $key ) {
             $attrs[$key] = intval( $attrs[$key] );
         }
         // sanitize boolean vals
-        foreach ( array( 'display_posts', 'display_subcategories' ) as $key ) {
+        foreach ( array('display_posts', 'display_subcategories') as $key ) {
             if ( is_string( $attrs[$key] ) ) {
-                $attrs[$key] = in_array( strtolower( $attrs[$key] ), array( 'true', '1' ) );
+                $attrs[$key] = in_array( strtolower( $attrs[$key] ), array('true', '1') );
             }
         }
         $args = array(
             'post_type'      => WPHelpKit_Article::$post_type,
-            'tax_query'      => array( array(
-            'taxonomy'         => $attrs['category']->taxonomy,
-            'field'            => 'id',
-            'terms'            => $attrs['category']->term_id,
-            'include_children' => false,
-        ) ),
+            'tax_query'      => array(array(
+                'taxonomy'         => $attrs['category']->taxonomy,
+                'field'            => 'id',
+                'terms'            => $attrs['category']->term_id,
+                'include_children' => false,
+            )),
             'orderby'        => 'meta_value_num title',
             'order'          => 'ASC',
             'meta_key'       => WPHelpKit_Article::get_instance()->display_order_meta_key( $attrs['category']->term_id ),
             'posts_per_page' => ( is_customize_preview() ? -1 : $attrs['number_of_posts'] ),
             'paged'          => ( !is_customize_preview() && $attrs['pagination'] && get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1 ),
         );
-        $post_query = new WP_Query( $args );
+        $post_query = new WP_Query($args);
         $html = $display = $see_all = '';
         $i = 0;
         $href = esc_url( get_term_link( $attrs['category'] ) );
-        
         if ( is_customize_preview() || $attrs['display_posts'] ) {
             // save thee global `$post`.
             $the_global_post = $post;
@@ -351,8 +335,7 @@ class WPHelpKit_Article_Category
                     // category in the breadcrumbs.
                     $data_category = sprintf( " data-helpkit-category='%d'", $attrs['category']->term_id );
                 }
-                
-                if ( is_tax( WPHelpKit_Article_Category::$category ) && ($attrs['articles_excerpt'] || is_customize_preview()) && !empty($article_excerpt = get_the_excerpt( get_the_ID() )) ) {
+                if ( is_tax( WPHelpKit_Article_Category::$category ) && ($attrs['articles_excerpt'] || is_customize_preview()) && !empty( $article_excerpt = get_the_excerpt( get_the_ID() ) ) ) {
                     $display_excerpt = '';
                     if ( $is_previewing ) {
                         $display_excerpt = ( $attrs['articles_excerpt'] ? '' : ' style="display: none"' );
@@ -377,11 +360,9 @@ class WPHelpKit_Article_Category
                         get_the_title()
                     );
                 }
-                
                 $i++;
             }
             if ( !$attrs['pagination'] ) {
-                
                 if ( $post_query->post_count && -1 !== $attrs['number_of_posts'] && $post_query->found_posts > $attrs['number_of_posts'] || $is_previewing && $post_query->found_posts ) {
                     $display = ( $attrs['display_posts'] && (-1 !== $attrs['number_of_posts'] && $post_query->found_posts > $attrs['number_of_posts']) ? '' : ' style="display: none;"' );
                     $see_all = sprintf(
@@ -391,16 +372,13 @@ class WPHelpKit_Article_Category
                         sprintf( __( 'See all %d articles', 'wphelpkit' ), $post_query->found_posts )
                     );
                 }
-            
             }
             // reset the global `$post'.
             wp_reset_postdata();
             $post = $the_global_post;
         }
-        
         wp_enqueue_style( 'wphelpkit-styles' );
         $description = '';
-        
         if ( is_customize_preview() || $attrs['description'] ) {
             $display = '';
             if ( $is_previewing ) {
@@ -409,7 +387,6 @@ class WPHelpKit_Article_Category
             $description = wp_trim_words( category_description( $attrs['category']->term_id ), 20 );
             $description = sprintf( "<div class='wphelpkit-category-description'%s>%s</div>", $display, $description );
         }
-        
         $header = '';
         $image = '';
         $image_html = '';
@@ -417,29 +394,25 @@ class WPHelpKit_Article_Category
             $header = $image_html . '<h2>' . '<a href="' . $href . '">' . $attrs['category']->name . '</a>' . '</h2>' . $description;
         }
         $sub_categories = wphelpkit_get_sub_categories( $attrs['category'], $attrs['display_subcategories'], $attrs['subcategories_description'] );
-        
         if ( !is_post_type_archive( WPHelpKit_Article::$post_type ) ) {
             $class = apply_filters( 'wphelpkit-class', array() );
         } else {
             $class = array();
         }
-        
-        $default_class = array( 'wphelpkit', 'wphelpkit-category' );
+        $default_class = array('wphelpkit', 'wphelpkit-category');
         $class = array_merge( $default_class, $class );
         $class = implode( ' ', $class );
         $pagination = '';
-        
         if ( !is_customize_preview() && $attrs['pagination'] ) {
             $pagination = paginate_links();
             $pagination = '<nav class="navigation pagination">' . '<div class="nav-links">' . $pagination . '</div>' . '</nav>';
         }
-        
-        if ( !empty($html) ) {
+        if ( !empty( $html ) ) {
             $html = "<ul class='wphelpkit-articles'>" . $html . "</ul>";
         }
         return '<div class="' . $class . '" id="tag-' . $attrs['category']->term_id . '">' . $header . $sub_categories . $html . $see_all . $pagination . '</div>';
     }
-    
+
     /**
      * Short-circuit WP Core trying to get our default category via `get_option()`.
      *
@@ -456,11 +429,10 @@ class WPHelpKit_Article_Category
      *
      * @filter pre_option_default_ . self::$category
      */
-    public function pre_default_category()
-    {
+    public function pre_default_category() {
         return WPHelpKit_Settings::get_instance()->get_option( 'default_category' );
     }
-    
+
     /**
      * Modify a query to order categories by their "display order" term meta.
      *
@@ -473,26 +445,25 @@ class WPHelpKit_Article_Category
      *
      * @action pre_get_terms
      */
-    public function category_orderby( $query )
-    {
+    public function category_orderby( $query ) {
         if ( !(!is_admin() && WPHelpKit_Article::$display_order_meta_key === $query->query_vars['orderby']) ) {
             return;
         }
         $meta_key = WPHelpKit_Article::get_instance()->display_order_meta_key();
         $meta_query_args = array(
             'display_order' => array(
-            'key'     => $meta_key,
-            'value'   => 0,
-            'compare' => '>=',
-        ),
+                'key'     => $meta_key,
+                'value'   => 0,
+                'compare' => '>=',
+            ),
         );
-        $meta_query = new WP_Meta_Query( $meta_query_args );
+        $meta_query = new WP_Meta_Query($meta_query_args);
         $query->meta_query = $meta_query;
         $query->query_vars['orderby'] = 'meta_value_num';
         $query->query_vars['meta_key'] = $meta_key;
         return;
     }
-    
+
     /**
      * Modify row actions in our Category List Table.
      *
@@ -505,16 +476,14 @@ class WPHelpKit_Article_Category
      *
      * @action wphelpkit-category_row_actions
      */
-    public function category_row_actions( $actions, $term )
-    {
+    public function category_row_actions( $actions, $term ) {
         $default = WPHelpKit_Settings::get_instance()->get_option( 'default_category' );
-        
         if ( $term->term_id === $default ) {
             // `$term` is the default, so don't let the user delete it.
-            unset( $actions['delete'] );
+            unset($actions['delete']);
         } else {
             // Add the "Make Default" aciton.
-            $redirect_to = urlencode( remove_query_arg( array( 'action', 'action2' ), wp_kses_post( $_SERVER['REQUEST_URI'] ) ) );
+            $redirect_to = urlencode( remove_query_arg( array('action', 'action2'), wp_kses_post( $_SERVER['REQUEST_URI'] ) ) );
             $args = array(
                 'action'          => 'wphelpkit-make-default-category',
                 'term_id'         => $term->term_id,
@@ -523,10 +492,9 @@ class WPHelpKit_Article_Category
             $href = add_query_arg( $args, admin_url() );
             $actions['wphelpkit-make-default'] = sprintf( "<a href='%s'>%s</a>", $href, esc_html__( 'Make Default', 'wphelpkit' ) );
         }
-        
         return $actions;
     }
-    
+
     /**
      * Add a dropdown/filter to the edit.php screen for our Category taxonomy.
      *
@@ -536,9 +504,8 @@ class WPHelpKit_Article_Category
      *
      * @action restrict_manage_posts
      */
-    public function add_category_dropdown()
-    {
-        global  $typenow ;
+    public function add_category_dropdown() {
+        global $typenow;
         if ( WPHelpKit_Article::$post_type !== $typenow ) {
             return;
         }
@@ -562,7 +529,7 @@ class WPHelpKit_Article_Category
         wp_dropdown_categories( $args );
         return;
     }
-    
+
     /**
      * Retrieve the terms in our category taxonomy.
      *
@@ -578,15 +545,14 @@ class WPHelpKit_Article_Category
      *                            Will return WP_Error, if any of $taxonomies do not exist.
      *                            Will return number of terms when 'count' is true.
      */
-    public function get_categories( $args = array() )
-    {
+    public function get_categories( $args = array() ) {
         $default_args = array(
             'taxonomy' => self::$category,
         );
         $args = wp_parse_args( $default_args, $args );
         return WPHelpKit_Article::get_instance()->get_terms( $args );
     }
-    
+
     /**
      * Get the display order for a given category.
      *
@@ -599,16 +565,13 @@ class WPHelpKit_Article_Category
      *                  for failure, must use `false === $retun_val` as 0 is a legal
      *                  return value.
      */
-    public function get_category_display_order( $term )
-    {
+    public function get_category_display_order( $term ) {
         if ( !$term instanceof WP_Term ) {
-            
             if ( is_int( $term ) ) {
                 $term = get_term_by( 'id', $term, self::$category );
             } elseif ( is_string( $term ) ) {
                 $term = get_term_by( 'slug', $term, self::$category );
             }
-        
         }
         if ( self::$category !== $term->taxonomy ) {
             // not our category taxonomy, nothing to do.
@@ -621,7 +584,7 @@ class WPHelpKit_Article_Category
         }
         return intval( $display_order );
     }
-    
+
     /**
      * Update "display order" term meta via AJAX.
      *
@@ -631,10 +594,8 @@ class WPHelpKit_Article_Category
      *
      * @action wp_ajax_ . self::$category_order_action
      */
-    public function ajax_category_order()
-    {
+    public function ajax_category_order() {
         check_ajax_referer( self::$category_order_action . '-nonce', 'nonce' );
-        
         if ( isset( $_REQUEST['data'] ) && is_array( $_REQUEST['data'] ) ) {
             $data = array_map( 'sanitize_text_field', $_REQUEST['data'] );
             parse_str( $data['order'], $order );
@@ -651,9 +612,8 @@ class WPHelpKit_Article_Category
         } else {
             wp_send_json_error( "Error! Invalid data." );
         }
-    
     }
-    
+
     /**
      * Set the display order for a given category.
      *
@@ -665,16 +625,13 @@ class WPHelpKit_Article_Category
      * @param int $display_order The display order to set.  Default 0.
      * @return bool Truthy value if successfully set, false otherwise.
      */
-    public function set_category_display_order( $term, $display_order = 0 )
-    {
+    public function set_category_display_order( $term, $display_order = 0 ) {
         if ( !$term instanceof WP_Term ) {
-            
             if ( is_int( $term ) ) {
                 $term = get_term_by( 'id', $term, self::$category );
             } elseif ( is_string( $term ) ) {
                 $term = get_term_by( 'slug', $term, self::$category );
             }
-        
         }
         if ( self::$category !== $term->taxonomy ) {
             // not our category taxonomy, nothing to do.
@@ -683,7 +640,7 @@ class WPHelpKit_Article_Category
         $display_order = intval( $display_order );
         return update_term_meta( $term->term_id, WPHelpKit_Article::get_instance()->display_order_meta_key(), $display_order );
     }
-    
+
     /**
      * Delete "display order" post meta when the relevant category is deleted.
      *
@@ -703,14 +660,13 @@ class WPHelpKit_Article_Category
         $tt_id,
         $deleted_term,
         $object_ids
-    )
-    {
+    ) {
         foreach ( $object_ids as $post_id ) {
             delete_post_meta( $post_id, WPHelpKit_Article::$display_order_meta_key . '-' . $tt_id );
         }
         return;
     }
-    
+
     /**
      * Add default "display order" post & term meta when a new category is created.
      *
@@ -722,8 +678,7 @@ class WPHelpKit_Article_Category
      *
      * @action create_wphelpkit-category
      */
-    public function category_created( $term_id, $tt_id )
-    {
+    public function category_created( $term_id, $tt_id ) {
         /**
          * Filters whether whether default display order post & term meta should
          * be added on category creation.
@@ -742,7 +697,7 @@ class WPHelpKit_Article_Category
         $this->set_category_display_order( $term_id, 0 );
         return;
     }
-    
+
     /**
      * Assign the default category to articles that do not already have categories assigned.
      *
@@ -755,43 +710,36 @@ class WPHelpKit_Article_Category
      *
      * @action save_post_wphelpkit-article
      */
-    public function maybe_assign_default_category( $post_id, $post, $update )
-    {
+    public function maybe_assign_default_category( $post_id, $post, $update ) {
         // ensure we really should be perform these steps.
-        
         if ( !wphelpkit_is_json_request() ) {
-            if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'trash', 'untrash' ) ) ) {
+            if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array('trash', 'untrash') ) ) {
                 return;
             }
             if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
                 return;
             }
         }
-        
-        
         if ( !current_user_can( 'edit_post', $post_id ) ) {
             wp_die( 'Cheatin&#8217; uh?' );
             return;
         }
-        
         $categories = get_the_terms( $post, self::$category );
-        if ( !empty($categories) && !is_wp_error( $categories ) ) {
+        if ( !empty( $categories ) && !is_wp_error( $categories ) ) {
             // article already has categories, nothing to do.
             return;
         }
         // add the default category.
         // verify the default category actually exists before assinging it.
         $default_category = WPHelpKit_Settings::get_instance()->get_option( 'default_category' );
-        
         if ( get_term_by( 'id', $default_category, self::$category ) ) {
             wp_set_post_terms( $post_id, $default_category, self::$category );
         } else {
             wp_send_json_error( "Error! Error assigning a default category to article." );
         }
-        
         return;
     }
-    
+
     /**
      * Make a category the default category.
      *
@@ -801,8 +749,7 @@ class WPHelpKit_Article_Category
      *
      * @action admin_action_wphelpkit-make-default-category
      */
-    public function make_default_category()
-    {
+    public function make_default_category() {
         if ( !isset( $_REQUEST['term_id'] ) ) {
             return;
         }

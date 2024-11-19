@@ -31,8 +31,8 @@ the_title( '<h1 class="entry-title">', '</h1>' );
         <div class='entry-meta'>
             <span class='wphelpkit-article-author'>
 <?php 
-echo  wp_kses_post( get_avatar( $post->post_author, 40 ) ) ;
-echo  wp_kses_post( sprintf( '<span class="name">%s</span>', get_the_author() ) ) ;
+echo wp_kses_post( get_avatar( $post->post_author, 40 ) );
+echo wp_kses_post( sprintf( '<span class="name">%s</span>', get_the_author() ) );
 ?>
             </span>
             <span class='wphelpkit-article-datetime'>
@@ -41,14 +41,12 @@ $action = esc_html__( 'Published', 'wphelpkit' );
 $time_string = '%1$s <time class="entry-date published" datetime="%2$s">%3$s</time>';
 $date = get_the_date();
 $date_w3c = get_the_date( DATE_W3C );
-
 if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
     $action = esc_html__( 'Updated', 'wphelpkit' );
     $time_string = '%1$s <time class="entry-date published updated" datetime="%2$s">%3$s</time>';
     $date = get_the_modified_date();
     $date_w3c = get_the_modified_date( DATE_W3C );
 }
-
 $time_string = sprintf(
     $time_string,
     $action,
@@ -61,7 +59,7 @@ $time_string = sprintf(
 esc_html_e( 'Posted on', 'wphelpkit' );
 ?></span>
                 <span><?php 
-echo  wp_kses_post( $time_string ) ;
+echo wp_kses_post( $time_string );
 ?></span>
 
             </span>
@@ -71,7 +69,6 @@ echo  wp_kses_post( $time_string ) ;
     </header><!-- .entry-header -->
 
     <?php 
-
 if ( '' !== get_the_post_thumbnail() ) {
     ?>
         <div class='post-thumbnail'>
@@ -85,7 +82,6 @@ if ( '' !== get_the_post_thumbnail() ) {
         </div><!-- .post-thumbnail -->
     <?php 
 }
-
 ?>
 
     <div class='entry-content'>
@@ -115,12 +111,11 @@ $tags_list = get_the_term_list(
     ''
 );
 if ( $tags_list && !is_wp_error( $tags_list ) ) {
-    echo  '<span class="wphelpkit-tags-links"><span class="wphelpkiticons wphelpkiticons-tag"></span><span class="screen-reader-text">' . esc_html__( 'Tags', 'wphelpkit' ) . '</span>' . wp_kses_post( $tags_list ) . '</span>' ;
+    echo '<span class="wphelpkit-tags-links"><span class="wphelpkiticons wphelpkiticons-tag"></span><span class="screen-reader-text">' . esc_html__( 'Tags', 'wphelpkit' ) . '</span>' . wp_kses_post( $tags_list ) . '</span>';
 }
 edit_post_link( esc_html__( 'Edit', 'wphelpkit' ) . '<span class="screen-reader-text"> ' . get_the_title() . '</span>', '<span class="edit-link">', '</span>' );
 $related_articles = WPHelpKit_Article::get_instance()->get_related_articles( $post );
-
-if ( WPHelpKit_Settings::get_instance()->get_option( 'related_articles' ) && !empty($related_articles) || WPHelpKit_Settings::get_instance()->get_option( 'article_voting' ) && wphelpkit_fs_init()->is__premium_only() ) {
+if ( WPHelpKit_Settings::get_instance()->get_option( 'related_articles' ) && !empty( $related_articles ) || WPHelpKit_Settings::get_instance()->get_option( 'article_voting' ) && wphelpkit_fs_init()->is__premium_only() ) {
     ?>
             <div class='wphelpkit-colophon'>
                 <?php 
@@ -129,7 +124,6 @@ if ( WPHelpKit_Settings::get_instance()->get_option( 'related_articles' ) && !em
             </div>
             <?php 
 }
-
 ?>
 
     </footer>

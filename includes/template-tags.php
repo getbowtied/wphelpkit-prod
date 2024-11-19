@@ -19,9 +19,8 @@ defined( 'ABSPATH' ) || die;
  *
  * @return string
  */
-function wphelpkit_get_breadcrumbs()
-{
-    global  $post ;
+function wphelpkit_get_breadcrumbs() {
+    global $post;
     $delimiter = esc_html__( '&#47;', 'wphelpkit' );
     $display = WPHelpKit_Settings::get_instance()->get_option( 'breadcrumbs' ) || is_search() || is_tax( WPHelpKit_Article_Tag::$tag );
     if ( !is_customize_preview() ) {
@@ -34,7 +33,6 @@ function wphelpkit_get_breadcrumbs()
     $breadcrumbs = array();
     // always start with the "home" link
     $homepage_output = get_option( 'show_on_front' );
-    
     if ( $homepage_output === 'page' ) {
         $frontpage_id = get_option( 'page_on_front' );
     } else {
@@ -42,8 +40,6 @@ function wphelpkit_get_breadcrumbs()
             $frontpage_id = get_option( 'page_for_posts' );
         }
     }
-    
-    
     if ( $frontpage_id && $frontpage_id == $archive_info->id ) {
         // if Helpkit Index is also the frontpage, then display a 'Home' link
         // to that page/archive
@@ -59,10 +55,8 @@ function wphelpkit_get_breadcrumbs()
             esc_html( $archive_info->text )
         );
     }
-    
     // get the "current" term, depending on whether we're in a taxonomy
     // archive or a single post
-    
     if ( is_tax( WPHelpKit_Article_Category::$category ) ) {
         // save the category taxonomy, to ensure it gets used throughout
         $taxonomy = WPHelpKit_Article_Category::$category;
@@ -83,7 +77,6 @@ function wphelpkit_get_breadcrumbs()
         // prevent output if called from an inappropriate place.
         return;
     }
-    
     // walk up the tree and gathering ancestor terms
     $_breadcrumbs = array();
     while ( isset( $_term->parent ) && $_term->parent > 0 ) {
@@ -99,7 +92,6 @@ function wphelpkit_get_breadcrumbs()
     // reverse them so they are in the correct order.
     $breadcrumbs = array_merge( $breadcrumbs, array_reverse( $_breadcrumbs ) );
     // add the "leaf" node
-    
     if ( is_singular( WPHelpKit_Article::$post_type ) ) {
         if ( $term instanceof WP_Term ) {
             $breadcrumbs[] = sprintf(
@@ -110,21 +102,18 @@ function wphelpkit_get_breadcrumbs()
             );
         }
         $title = $post->post_title;
-        
         if ( isset( $_REQUEST['leaf_article'] ) && $_REQUEST['leaf_article'] ) {
             $leaf = sanitize_text_field( $_REQUEST['leaf_article'] );
             if ( is_search() && intval( $leaf ) ) {
                 $title = get_the_title( intval( $leaf ) );
             }
         }
-        
         $breadcrumbs[] = sprintf( '<span class="breadcrumb-separator">%s</span><span>%s</span>', $delimiter, $title );
     } elseif ( is_search() ) {
         $breadcrumbs[] = sprintf( '<span class="breadcrumb-separator">%s</span><span>%s</span>', $delimiter, sanitize_text_field( $_REQUEST['s'] ) );
     } elseif ( isset( $term ) ) {
         $breadcrumbs[] = sprintf( '<span class="breadcrumb-separator">%s</span><span>%s</span>', $delimiter, $term->name );
     }
-    
     /**
      * Filters the breadcrumbs before they are ourput.
      *
@@ -149,9 +138,8 @@ function wphelpkit_get_breadcrumbs()
  *
  * @return void Echo's its output.
  */
-function wphelpkit_breadcrumbs()
-{
-    echo  wphelpkit_get_breadcrumbs() ;
+function wphelpkit_breadcrumbs() {
+    echo wphelpkit_get_breadcrumbs();
     return;
 }
 
@@ -169,12 +157,11 @@ function wphelpkit_breadcrumbs()
  * @param bool    $descriptions Whether to display/hide the subcategories descriptions.
  * @return string|WP_Error
  */
-function wphelpkit_get_sub_categories( $term = null, $display = true, $descriptions = false )
-{
+function wphelpkit_get_sub_categories(  $term = null, $display = true, $descriptions = false  ) {
     if ( !is_customize_preview() && !$display ) {
         return '';
     }
-    if ( empty($term) ) {
+    if ( empty( $term ) ) {
         $term = get_queried_object();
     }
     $args = array(
@@ -185,7 +172,7 @@ function wphelpkit_get_sub_categories( $term = null, $display = true, $descripti
     if ( is_wp_error( $children ) ) {
         return $children;
     }
-    if ( empty($children) ) {
+    if ( empty( $children ) ) {
         return '';
     }
     $_children = array();
@@ -203,8 +190,7 @@ function wphelpkit_get_sub_categories( $term = null, $display = true, $descripti
          */
         $include_children = apply_filters( 'wphelpkit-category-article-counts-include-children', false, $child );
         $count = WPHelpKit_Article::get_instance()->get_article_count( $child, $include_children );
-        
-        if ( is_tax( WPHelpKit_Article_Category::$category ) && ($descriptions || is_customize_preview()) && !empty($subcategory_description = category_description( $child->term_id )) ) {
+        if ( is_tax( WPHelpKit_Article_Category::$category ) && ($descriptions || is_customize_preview()) && !empty( $subcategory_description = category_description( $child->term_id ) ) ) {
             $display_description = '';
             if ( WPHelpKit::is_previewing() ) {
                 $display_description = ( WPHelpKit_Settings::get_instance()->get_option( '[category_archive]display_subcategories_description' ) ? '' : ' style="display: none"' );
@@ -219,10 +205,9 @@ function wphelpkit_get_sub_categories( $term = null, $display = true, $descripti
         } else {
             $_children[] = sprintf( "<li class='wphelpkit-subcategory' id='tag-{$child->term_id}'><div class='wphelpkit-subcategory-title-wrapper'><span class='wphelpkiticons wphelpkiticons-folder'></span><a href='%s' class='wphelpkit-subcategory-title'>%s</a><span class='wphelpkit-article-count'>{$count}</span></div></li>", get_term_link( $child ), $child->name );
         }
-    
     }
     $_children = implode( '', $_children );
-    $display = ( $display && !empty($children) ? '' : ' style="display: none"' );
+    $display = ( $display && !empty( $children ) ? '' : ' style="display: none"' );
     return '<ul class="wphelpkit-subcategories"' . $display . '>' . $_children . '</ul>';
 }
 
@@ -235,9 +220,8 @@ function wphelpkit_get_sub_categories( $term = null, $display = true, $descripti
  * @param WP_Term $term The term whose children should be output.
  * @return void Echo's its output.
  */
-function wphelpkit_sub_categories( $term = null )
-{
-    echo  wp_kses_post( wphelpkit_get_sub_categories( $term ) ) ;
+function wphelpkit_sub_categories(  $term = null  ) {
+    echo wp_kses_post( wphelpkit_get_sub_categories( $term ) );
     return;
 }
 
@@ -250,8 +234,7 @@ function wphelpkit_sub_categories( $term = null )
  * @param array $attrs Attributes for our search shortcode.
  * @return string
  */
-function wphelpkit_get_search_form( $attrs = array() )
-{
+function wphelpkit_get_search_form(  $attrs = array()  ) {
     $_attrs = '';
     foreach ( $attrs as $name => $val ) {
         $_attrs .= sprintf( ' %s="%s"', $name, esc_attr( $val ) );
@@ -271,9 +254,8 @@ function wphelpkit_get_search_form( $attrs = array() )
  * @param string $content Content for our search shortcode.
  * @return void Echo's it's output.
  */
-function wphelpkit_search_form( $attrs = array(), $content = '' )
-{
-    echo  wphelpkit_get_search_form( $attrs, $content ) ;
+function wphelpkit_search_form(  $attrs = array(), $content = ''  ) {
+    echo wphelpkit_get_search_form( $attrs, $content );
     return;
 }
 
@@ -287,15 +269,13 @@ function wphelpkit_search_form( $attrs = array(), $content = '' )
  * @param WP_Post|int $post Optional. Post ID or WP_Post object. Default is global $post.
  * @return string
  */
-function wphelpkit_get_related_articles( $post = null )
-{
+function wphelpkit_get_related_articles(  $post = null  ) {
     $post = get_post( $post );
     $related_articles = WPHelpKit_Article::get_instance()->get_related_articles( $post );
-    if ( empty($related_articles) ) {
+    if ( empty( $related_articles ) ) {
         return '';
     }
     $display = WPHelpKit_Settings::get_instance()->get_option( 'related_articles' );
-    
     if ( !is_customize_preview() ) {
         if ( !$display ) {
             return '';
@@ -304,7 +284,6 @@ function wphelpkit_get_related_articles( $post = null )
     } else {
         $display = ( $display ? '' : ' style="display: none"' );
     }
-    
     $_related_articles = '';
     foreach ( $related_articles as $related_article ) {
         $permalink = get_the_permalink( $related_article );
@@ -324,9 +303,8 @@ function wphelpkit_get_related_articles( $post = null )
  * @param WP_Post|int $post Optional. Post ID or WP_Post object. Default is global $post.
  * @return void Echo's its output.
  */
-function wphelpkit_related_articles( $post = null )
-{
-    echo  wp_kses_post( wphelpkit_get_related_articles( $post ) ) ;
+function wphelpkit_related_articles(  $post = null  ) {
+    echo wp_kses_post( wphelpkit_get_related_articles( $post ) );
     return;
 }
 
@@ -350,8 +328,7 @@ function wphelpkit_related_articles( $post = null )
  * }
  * @return string
  */
-function wphelpkit_get_archive( $attrs = array() )
-{
+function wphelpkit_get_archive(  $attrs = array()  ) {
     $settings = WPHelpKit_Settings::get_instance();
     $default_attrs = array(
         'display_posts'                  => $settings->get_option( '[article_archive]display_posts' ),
@@ -390,9 +367,8 @@ function wphelpkit_get_archive( $attrs = array() )
  * }
  * @return string
  */
-function wphelpkit_archive( $attrs = array() )
-{
-    echo  wphelpkit_get_archive( $attrs ) ;
+function wphelpkit_archive(  $attrs = array()  ) {
+    echo wphelpkit_get_archive( $attrs );
     //escaped in the function: return do_shortcode(wp_kses_post($shortcode));
     return;
 }
@@ -424,8 +400,7 @@ function wphelpkit_archive( $attrs = array() )
  * }
  * @return string
  */
-function wphelpkit_get_category_archive( $attrs = array() )
-{
+function wphelpkit_get_category_archive(  $attrs = array()  ) {
     $settings = WPHelpKit_Settings::get_instance();
     $default_attrs = array(
         'category'                  => '',
@@ -459,8 +434,7 @@ function wphelpkit_get_category_archive( $attrs = array() )
  * }
  * @return string
  */
-function wphelpkit_get_tag_archive( $attrs = array() )
-{
+function wphelpkit_get_tag_archive(  $attrs = array()  ) {
     $settings = WPHelpKit_Settings::get_instance();
     $default_attrs = array(
         'tag'             => '',
@@ -494,9 +468,8 @@ function wphelpkit_get_tag_archive( $attrs = array() )
  * }
  * @return void Echo's its output.
  */
-function wphelpkit_category_archive( $attrs )
-{
-    echo  wphelpkit_get_category_archive( $attrs ) ;
+function wphelpkit_category_archive(  $attrs  ) {
+    echo wphelpkit_get_category_archive( $attrs );
 }
 
 /**
@@ -509,8 +482,7 @@ function wphelpkit_category_archive( $attrs )
  * }
  * @return void Echo's its output.
  */
-function wphelpkit_tag_archive( $attrs )
-{
-    echo  wphelpkit_get_tag_archive( $attrs ) ;
+function wphelpkit_tag_archive(  $attrs  ) {
+    echo wphelpkit_get_tag_archive( $attrs );
     //escaped in the function: return do_shortcode(wp_kses_post($shortcode));
 }

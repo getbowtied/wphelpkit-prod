@@ -3,7 +3,7 @@
 /*
  * Plugin Name: WPHelpKit
  * Description: Documentation and Knowledge Base — Organize, publish, and manage help articles for your SaaS or software product.
- * Version: 1.4
+ * Version: 1.5
  * Author: WPHelpKit
  * Plugin URI: https://wphelpkit.com
  * Release Asset: true
@@ -21,18 +21,14 @@ if ( !function_exists( 'is_plugin_active' ) ) {
 //============================
 // Freemius initialization
 //============================
-
 if ( function_exists( 'wphelpkit_fs_init' ) ) {
     wphelpkit_fs_init()->set_basename( false, __FILE__ );
 } else {
     // DO NOT REMOVE THIS IF, IT IS ESSENTIAL FOR THE `function_exists` CALL ABOVE TO PROPERLY WORK.
-    
     if ( !function_exists( 'wphelpkit_fs_init' ) ) {
         // Create a helper function for easy SDK access.
-        function wphelpkit_fs_init()
-        {
-            global  $wphelpkit_fs_init ;
-            
+        function wphelpkit_fs_init() {
+            global $wphelpkit_fs_init;
             if ( !isset( $wphelpkit_fs_init ) ) {
                 // Include Freemius SDK.
                 require_once dirname( __FILE__ ) . '/freemius/start.php';
@@ -46,23 +42,22 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                     'has_addons'     => false,
                     'has_paid_plans' => true,
                     'menu'           => array(
-                    'slug'        => 'wphelpkit-settings',
-                    'first-path'  => 'edit.php?post_type=helpkit',
-                    'contact'     => true,
-                    'support'     => false,
-                    'affiliation' => false,
-                    'parent'      => array(
-                    'slug' => 'edit.php?post_type=helpkit',
-                ),
-                ),
+                        'slug'        => 'wphelpkit-settings',
+                        'first-path'  => 'edit.php?post_type=helpkit',
+                        'contact'     => true,
+                        'support'     => false,
+                        'affiliation' => false,
+                        'parent'      => array(
+                            'slug' => 'edit.php?post_type=helpkit',
+                        ),
+                    ),
                     'navigation'     => 'tabs',
                     'is_live'        => true,
                 ) );
             }
-            
             return $wphelpkit_fs_init;
         }
-        
+
         // Init Freemius.
         wphelpkit_fs_init();
         // Disable some Freemius features.
@@ -70,11 +65,9 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
         // Signal that SDK was initiated.
         do_action( 'wphelpkit_fs_init_loaded' );
     }
-    
     //============================
     // WPHelpKit
     //============================
-    
     if ( !class_exists( 'WPHelpKit' ) ) {
         require dirname( __FILE__ ) . '/vendor/autoload.php';
         /**
@@ -85,8 +78,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
          * @since 0.1.1 Renamed class to WPHelpKit_Plugin.
          * @since 0.9.0 Renamed class to WPHelpKit.
          */
-        class WPHelpKit
-        {
+        class WPHelpKit {
             /**
              * Our static instance.
              *
@@ -94,7 +86,8 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @var WPHelpKit
              */
-            private static  $instance ;
+            private static $instance;
+
             /**
              * Our version number.
              *
@@ -102,7 +95,8 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @var string
              */
-            const  VERSION = '1.4' ;
+            const VERSION = '1.5';
+
             /**
              * Transient name to set when we are activated.
              *
@@ -110,7 +104,8 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @var string
              */
-            public static  $activated_transient = 'wphelpkit-activated' ;
+            public static $activated_transient = 'wphelpkit-activated';
+
             /**
              * Get our instance.
              *
@@ -121,14 +116,13 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @return WPHelpKit
              */
-            public static function get_instance()
-            {
+            public static function get_instance() {
                 if ( !self::$instance ) {
                     self::$instance = new self();
                 }
                 return self::$instance;
             }
-            
+
             /**
              * Constructor.
              *
@@ -136,8 +130,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @since 0.0.1
              */
-            public function __construct()
-            {
+            public function __construct() {
                 if ( self::$instance ) {
                     return self::$instance;
                 }
@@ -147,7 +140,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                     $this->add_admin_hooks();
                 }
             }
-            
+
             /**
              * Add hooks.
              *
@@ -155,24 +148,23 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @return void
              */
-            protected function add_hooks()
-            {
-                global  $wp_filter ;
-                register_activation_hook( __FILE__, array( $this, 'activate' ) );
-                add_action( 'plugins_loaded', array( $this, 'setup' ) );
-                add_action( 'init', array( $this, 'register_scripts_styles' ) );
-                add_action( 'init', array( $this, 'maybe_create_helpkit_page' ), PHP_INT_MAX );
+            protected function add_hooks() {
+                global $wp_filter;
+                register_activation_hook( __FILE__, array($this, 'activate') );
+                add_action( 'plugins_loaded', array($this, 'setup') );
+                add_action( 'init', array($this, 'register_scripts_styles') );
+                add_action( 'init', array($this, 'maybe_create_helpkit_page'), PHP_INT_MAX );
                 add_filter(
                     'block_categories_all',
-                    array( $this, 'block_categories' ),
+                    array($this, 'block_categories'),
                     10,
                     2
                 );
-                add_action( 'enqueue_block_editor_assets', array( $this, 'blacklist_blocks' ) );
-                add_action( 'import_start', array( 'WPHelpKit_Importer', 'get_instance' ) );
+                add_action( 'enqueue_block_editor_assets', array($this, 'blacklist_blocks') );
+                add_action( 'import_start', array('WPHelpKit_Importer', 'get_instance') );
                 return;
             }
-            
+
             /**
              * Add admin hooks.
              *
@@ -180,12 +172,11 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @return void
              */
-            protected function add_admin_hooks()
-            {
-                add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+            protected function add_admin_hooks() {
+                add_action( 'admin_enqueue_scripts', array($this, 'admin_enqueue_scripts') );
                 return;
             }
-            
+
             /**
              * Perform basic setup operations.
              *
@@ -195,8 +186,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @action plugins_loaded
              */
-            public function setup()
-            {
+            public function setup() {
                 WPHelpKit_Session_Handler::get_instance();
                 // need to instantiate our Settings before the Article CPT
                 // since the Article CPT uses the settings when registering
@@ -211,7 +201,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                 WPHelpKit_Index_Tree::get_instance();
                 return;
             }
-            
+
             /**
              * Register our scripts and styles.
              *
@@ -221,22 +211,21 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @action init
              */
-            public function register_scripts_styles()
-            {
+            public function register_scripts_styles() {
                 $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min' );
                 $rtl = ( is_rtl() ? '-rtl' : '' );
                 $styles = array(
                     'wphelpkit-wphelpkiticons' => array(),
                     'wphelpkit-styles'         => array(
-                    'dependencies' => array( 'wphelpkit-wphelpkiticons' ),
-                ),
+                        'dependencies' => array('wphelpkit-wphelpkiticons'),
+                    ),
                     'wphelpkit-admin'          => array(
-                    'is_admin'     => true,
-                    'dependencies' => array( 'wphelpkit-wphelpkiticons' ),
-                ),
+                        'is_admin'     => true,
+                        'dependencies' => array('wphelpkit-wphelpkiticons'),
+                    ),
                     'wphelpkit-order'          => array(
-                    'is_admin' => true,
-                ),
+                        'is_admin' => true,
+                    ),
                 );
                 foreach ( $styles as $handle => $data ) {
                     // contruct $src & $dependencies if they are not already set.
@@ -255,50 +244,50 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                 }
                 $scripts = array(
                     'wphelpkit-customize-preview'   => array(
-                    'is_admin'     => true,
-                    'dependencies' => array( 'jquery' ),
-                ),
+                        'is_admin'     => true,
+                        'dependencies' => array('jquery'),
+                    ),
                     'wphelpkit-customize-controls'  => array(
-                    'is_admin'     => true,
-                    'dependencies' => array( 'jquery', 'customize-controls' ),
-                ),
+                        'is_admin'     => true,
+                        'dependencies' => array('jquery', 'customize-controls'),
+                    ),
                     'wphelpkit-order'               => array(
-                    'is_admin'     => true,
-                    'dependencies' => array( 'jquery-ui-sortable' ),
-                    'localize'     => array(
-                    'l10n' => array(
-                    'ajaxurl'         => admin_url( 'admin-ajax.php' ),
-                    'category_action' => WPHelpKit_Article_Category::$category_order_action,
-                    'category_nonce'  => wp_create_nonce( WPHelpKit_Article_Category::$category_order_action . '-nonce' ),
-                    'article_action'  => WPHelpKit_Article::$article_order_action,
-                    'article_nonce'   => wp_create_nonce( WPHelpKit_Article::$article_order_action . '-nonce' ),
-                    'notice'          => esc_html__( 'Page updated.', 'wphelpkit' ),
-                ),
-                ),
-                ),
+                        'is_admin'     => true,
+                        'dependencies' => array('jquery-ui-sortable'),
+                        'localize'     => array(
+                            'l10n' => array(
+                                'ajaxurl'         => admin_url( 'admin-ajax.php' ),
+                                'category_action' => WPHelpKit_Article_Category::$category_order_action,
+                                'category_nonce'  => wp_create_nonce( WPHelpKit_Article_Category::$category_order_action . '-nonce' ),
+                                'article_action'  => WPHelpKit_Article::$article_order_action,
+                                'article_nonce'   => wp_create_nonce( WPHelpKit_Article::$article_order_action . '-nonce' ),
+                                'notice'          => esc_html__( 'Page updated.', 'wphelpkit' ),
+                            ),
+                        ),
+                    ),
                     'wphelpkit-search-block-editor' => array(
-                    'src'          => 'assets/js/blocks/dist/search/search',
-                    'dependencies' => array( 'wp-element' ),
-                    'localize'     => array(
-                    'l10n' => array(
-                    'name' => WPHelpKit_Search::$block,
-                ),
-                ),
-                ),
+                        'src'          => 'assets/js/blocks/dist/search/search',
+                        'dependencies' => array('wp-element'),
+                        'localize'     => array(
+                            'l10n' => array(
+                                'name' => WPHelpKit_Search::$block,
+                            ),
+                        ),
+                    ),
                     'wphelpkit-blacklist-blocks'    => array(
-                    'is_admin'     => true,
-                    'dependencies' => array( 'wp-blocks' ),
-                ),
+                        'is_admin'     => true,
+                        'dependencies' => array('wp-blocks'),
+                    ),
                     'wphelpkit-article-link'        => array(
-                    'dependencies' => array( 'jquery' ),
-                    'localize'     => array(
-                    'l10n' => array(
-                    'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                    'action'  => WPHelpKit_Article::$article_link_action,
-                    'nonce'   => wp_create_nonce( WPHelpKit_Article::$article_link_action . '-nonce' ),
-                ),
-                ),
-                ),
+                        'dependencies' => array('jquery'),
+                        'localize'     => array(
+                            'l10n' => array(
+                                'ajaxurl' => admin_url( 'admin-ajax.php' ),
+                                'action'  => WPHelpKit_Article::$article_link_action,
+                                'nonce'   => wp_create_nonce( WPHelpKit_Article::$article_link_action . '-nonce' ),
+                            ),
+                        ),
+                    ),
                 );
                 foreach ( $scripts as $handle => $data ) {
                     // contruct $src, $dependencies & $in_footer if they are not already set.
@@ -315,18 +304,16 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                         $in_footer
                     );
                     // localize the script if necessary.
-                    
                     if ( isset( $data['localize'] ) ) {
                         // contruct $object_name if not already set.
                         $object_name = ( !isset( $data['localize']['object_name'] ) ? str_replace( '-', '_', $handle ) : $data['localize']['object_name'] );
                         // localize the script.
                         wp_localize_script( $handle, $object_name, $data['localize']['l10n'] );
                     }
-                
                 }
                 return;
             }
-            
+
             /**
              * Enqueue our admin scripts and styles.
              *
@@ -336,13 +323,12 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @action admin_enqueue_scripts
              */
-            public function admin_enqueue_scripts()
-            {
-                global  $pagenow ;
+            public function admin_enqueue_scripts() {
+                global $pagenow;
                 wp_enqueue_style( 'wphelpkit-admin' );
                 return;
             }
-            
+
             /**
              * Add a new "block category" for our blocks.
              *
@@ -352,16 +338,15 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              * @param WP_Post $post
              * @return array
              */
-            public function block_categories( $categories, $post )
-            {
-                $category = array( array(
+            public function block_categories( $categories, $post ) {
+                $category = array(array(
                     'slug'  => 'wphelpkit',
                     'title' => esc_html__( 'WPHelpKit', 'wphelpkit' ),
-                ) );
+                ));
                 $categories = array_merge( $categories, $category );
                 return $categories;
             }
-            
+
             /**
              * Only allow our blocks for specific post type(s).
              *
@@ -369,16 +354,15 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @return void
              */
-            public function blacklist_blocks()
-            {
-                global  $post ;
+            public function blacklist_blocks() {
+                global $post;
                 if ( 'page' === get_post_type( $post ) ) {
                     return;
                 }
                 wp_enqueue_script( 'wphelpkit-blacklist-blocks' );
                 return;
             }
-            
+
             /**
              * Check WP version
              *
@@ -388,12 +372,11 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              * @param string $version used for comparation
              * @return bool value of comparison
              */
-            public static function is_wp_version( $operator, $version )
-            {
-                global  $wp_version ;
+            public static function is_wp_version( $operator, $version ) {
+                global $wp_version;
                 return version_compare( $wp_version, $version, $operator );
             }
-            
+
             /**
              * Is the user "previewing" something in Gutenberg?
              *
@@ -403,8 +386,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @return bool True if prevewing, false otherwise.
              */
-            public static function is_gutenberg_preview()
-            {
+            public static function is_gutenberg_preview() {
                 if ( !self::is_wp_version( '>=', '5.3.2' ) || !function_exists( 'get_current_screen' ) ) {
                     return isset( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context'];
                 }
@@ -415,7 +397,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                 }
                 return false;
             }
-            
+
             /**
              * Is the user "previewing" something either in the Customizer or in Gutenberg?
              *
@@ -423,11 +405,10 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @return bool True if prevewing, false otherwise.
              */
-            public static function is_previewing()
-            {
+            public static function is_previewing() {
                 return is_customize_preview() || self::is_gutenberg_preview();
             }
-            
+
             /**
              * Set a transient on plugin activation, so the next hit knows we were just activated.
              *
@@ -437,14 +418,13 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @action activate_wp-helpkit/plugin.php
              */
-            public function activate()
-            {
+            public function activate() {
                 set_transient( self::$activated_transient, true );
                 // flush the rewrite rules after registering post_type and taxonomies.
                 set_transient( WPHelpKit_Article::$flush_rewrite_rules_transient, true );
                 return;
             }
-            
+
             /**
              * On plugin activation, create a page to use as the HelpKit archive.
              *
@@ -454,8 +434,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
              *
              * @action init
              */
-            public function maybe_create_helpkit_page()
-            {
+            public function maybe_create_helpkit_page() {
                 $settings = WPHelpKit_Settings::get_instance();
                 $activated = get_transient( self::$activated_transient );
                 if ( !$activated ) {
@@ -487,17 +466,17 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
                 );
                 $page_id = wp_insert_post( $postarr );
                 // set the new page as the index_page.
-                if ( isset( $page_id ) && !empty($page_id) ) {
+                if ( isset( $page_id ) && !empty( $page_id ) ) {
                     $settings->set_option( 'index_page', $page_id );
                 }
                 return;
             }
-        
+
         }
+
         // instantiate ourselves
         WPHelpKit::get_instance();
     }
-    
     if ( !function_exists( 'wphelpkit_is_json_request' ) ) {
         /**
          * Checks whether current request is a JSON request, or is expecting a JSON response.
@@ -507,8 +486,7 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
          *
          * @return bool True if Accepts or Content-Type headers contain application/json, false otherwise.
          */
-        function wphelpkit_is_json_request()
-        {
+        function wphelpkit_is_json_request() {
             if ( isset( $_SERVER['HTTP_ACCEPT'] ) && false !== strpos( $_SERVER['HTTP_ACCEPT'], 'application/json' ) ) {
                 return true;
             }
@@ -517,6 +495,6 @@ if ( function_exists( 'wphelpkit_fs_init' ) ) {
             }
             return false;
         }
-    
+
     }
 }
